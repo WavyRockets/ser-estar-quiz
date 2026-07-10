@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ser vs Estar Quiz</title>
+    <style>
+        body { font-family: 'Comic Sans MS', sans-serif; background-color: #fdf5e6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
+        .card { background: rgba(255, 255, 255, 0.9); padding: 2rem; border-radius: 20px; border: 3px solid #333; text-align: center; width: 100%; max-width: 500px; }
+        h3 { font-size: 1.8rem; margin-bottom: 20px; font-weight: normal;}
+        h4 { font-size: 1.3rem; margin: 5px 0; }
+        input { width: 85%; padding: 15px; margin: 15px 0; border: 3px dashed #666; font-size: 1.5rem; }
+        button { padding: 15px 30px; border-radius: 20px; border: 3px solid #333; background: #ffe4b5; cursor: pointer; font-size: 1.5rem; font-weight: bold; }
+        button:hover { background: #ffd700; }
+        #feedback { margin-top: 20px; font-size: 1.1rem; font-weight: bold; min-height: auto; padding: 10px; }    
+        /* Progress Bar Styling */
+/* Progress Bar Styling */
+#progress-container { margin: 15px 0; }
+
+progress {
+    width: 100%;
+    height: 25px;
+    appearance: none;
+    background-color: #e0e0e0; /* The light grey track */
+    border-radius: 15px;
+    border: none;
+    overflow: hidden; /* This keeps the green bar inside the rounded corners */
+}
+
+button:disabled {
+    background: #cccccc;
+    color: #888888;
+    cursor: not-allowed;
+    border-color: #999;
+}
+
+/* The filled portion */
+progress::-webkit-progress-value {
+    background-color: #77dd77; /* Nicer pastel green */
+    border-radius: 15px;
+}
+
+/* Ensure the background doesn't show a border */
+progress::-webkit-progress-bar {
+    background-color: transparent;
+}
+    </style>
+</head>
+<body>
+
+<div id="game-screen" class="card">
+    <h4 id="questionType">Ser vs Estar</h4>    
+    <p>Score: <span id="score">0</span> / 500 | High Score: <span id="high-score">0</span></p>
+    <div id="progress-container">
+        <progress id="progress-bar" value="0" max="500"></progress>
+    </div>
+    <h3 id="question">Loading...</h3>
+    <input type="text" id="answer" placeholder="es / soy / está...">
+    <div id="action-area"><button onclick="checkAnswer()">Submit</button></div>
+    <div id="feedback"></div>
+</div>
+
+<script>
+
+document.getElementById("answer").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault(); // Prevents default form submission behavior if applicable
+        checkAnswer();
+    }
+});
+
+const SerEstar = [
+    { q: "Yo ___ abogado.", a: "soy", trans: "I am a lawyer.", rule: "Use SER for profession." },
+    { q: "Tú ___ muy simpático.", a: "eres", trans: "You are very nice.", rule: "Use SER for personality trait." },
+    { q: "Él ___ de Chile.", a: "es", trans: "He is from Chile.", rule: "Use SER for origin." },
+    { q: "Nosotros ___ amigos.", a: "somos", trans: "We are friends.", rule: "Use SER for relationship." },
+    { q: "Ellas ___ doctoras.", a: "son", trans: "They are doctors.", rule: "Use SER for profession." },
+    { q: "Yo ___ bajo.", a: "soy", trans: "I am short.", rule: "Use SER for physical description." },
+    { q: "Tú ___ de Argentina.", a: "eres", trans: "You are from Argentina.", rule: "Use SER for origin." },
+    { q: "La mesa ___ de metal.", a: "es", trans: "The table is made of metal.", rule: "Use SER for material." },
+    { q: "Nosotros ___ hermanos.", a: "somos", trans: "We are siblings.", rule: "Use SER for family relationship." },
+    { q: "Ellos ___ fuertes.", a: "son", trans: "They are strong.", rule: "Use SER for physical trait." },
+    { q: "Hoy ___ jueves.", a: "es", trans: "Today is Thursday.", rule: "Use SER for days." },
+    { q: "La fiesta ___ en mi casa.", a: "es", trans: "The party is at my house.", rule: "Use SER for event location." },
+    { q: "Yo ___ profesor.", a: "soy", trans: "I am a teacher.", rule: "Use SER for profession." },
+    { q: "Tú ___ rubio.", a: "eres", trans: "You are blonde.", rule: "Use SER for physical trait." },
+    { q: "Ella ___ mexicana.", a: "es", trans: "She is Mexican.", rule: "Use SER for nationality." },
+    { q: "Nosotros ___ estudiantes.", a: "somos", trans: "We are students.", rule: "Use SER for identity." },
+    { q: "Ellos ___ mis primos.", a: "son", trans: "They are my cousins.", rule: "Use SER for relationship." },
+    { q: "La casa ___ blanca.", a: "es", trans: "The house is white.", rule: "Use SER for permanent characteristic." },
+    { q: "Tú ___ muy generoso.", a: "eres", trans: "You are very generous.", rule: "Use SER for personality trait." },
+    { q: "Nosotros ___ mexicanos.", a: "somos", trans: "We are Mexican.", rule: "Use SER for nationality." },
+    { q: "Yo ___ hijo único.", a: "soy", trans: "I am an only child.", rule: "Use SER for family status." },
+    { q: "Tú ___ muy creativo.", a: "eres", trans: "You are very creative.", rule: "Use SER for personality trait." },
+    { q: "El reloj ___ de oro.", a: "es", trans: "The watch is made of gold.", rule: "Use SER for material." },
+    { q: "Nosotros ___ del norte.", a: "somos", trans: "We are from the north.", rule: "Use SER for origin." },
+    { q: "Ellos ___ mis vecinos.", a: "son", trans: "They are my neighbors.", rule: "Use SER for identity/relationship." },
+    { q: "La conferencia ___ mañana.", a: "es", trans: "The conference is tomorrow.", rule: "Use SER for event timing." },
+    { q: "Yo ___ vegetariano.", a: "soy", trans: "I am a vegetarian.", rule: "Use SER for personal identity/beliefs." },
+    { q: "Tú ___ el mejor.", a: "eres", trans: "You are the best.", rule: "Use SER for identity/opinion." },
+    { q: "El coche ___ de María.", a: "es", trans: "The car is Maria's.", rule: "Use SER for possession." },
+    { q: "Nosotros ___ muy valientes.", a: "somos", trans: "We are very brave.", rule: "Use SER for inherent traits." },
+    { q: "Ellas ___ de Italia.", a: "son", trans: "They are from Italy.", rule: "Use SER for origin." },
+    { q: "La mesa ___ redonda.", a: "es", trans: "The table is round.", rule: "Use SER for permanent physical description." },
+    { q: "Yo ___ muy reservado.", a: "soy", trans: "I am very reserved.", rule: "Use SER for personality." },
+    { q: "Tú ___ un gran actor.", a: "eres", trans: "You are a great actor.", rule: "Use SER for profession/identity." },
+    { q: "La boda ___ en junio.", a: "es", trans: "The wedding is in June.", rule: "Use SER for event timing." },
+    { q: "Nosotros ___ arquitectos.", a: "somos", trans: "We are architects.", rule: "Use SER for profession." },
+    { q: "Ellos ___ muy amables.", a: "son", trans: "They are very kind.", rule: "Use SER for personality." },
+    { q: "El edificio ___ alto.", a: "es", trans: "The building is tall.", rule: "Use SER for physical description." },
+    { q: "Yo ___ de sangre italiana.", a: "soy", trans: "I am of Italian blood.", rule: "Use SER for origin." },
+    { q: "La ciudad ___ muy moderna.", a: "es", trans: "The city is very modern.", rule: "Use SER for permanent characteristic." },
+    { q: "Yo ___ en el cine.", a: "estoy", trans: "I am at the cinema.", rule: "Use ESTAR for location." },
+    { q: "Tú ___ un poco triste.", a: "estás", trans: "You are a little sad.", rule: "Use ESTAR for emotional state." },
+    { q: "Ella ___ trabajando.", a: "está", trans: "She is working.", rule: "Use ESTAR for continuous action." },
+    { q: "Nosotros ___ felices.", a: "estamos", trans: "We are happy.", rule: "Use ESTAR for emotion." },
+    { q: "Ellos ___ aburridos.", a: "están", trans: "They are bored.", rule: "Use ESTAR for temporary state." },
+    { q: "El agua ___ fría.", a: "está", trans: "The water is cold.", rule: "Use ESTAR for condition." },
+    { q: "Yo ___ muy cansado hoy.", a: "estoy", trans: "I am very tired today.", rule: "Use ESTAR for physical state." },
+    { q: "Tú ___ en la cocina.", a: "estás", trans: "You are in the kitchen.", rule: "Use ESTAR for location." },
+    { q: "La ventana ___ abierta.", a: "está", trans: "The window is open.", rule: "Use ESTAR for state/condition." },
+    { q: "Nosotros ___ comiendo.", a: "estamos", trans: "We are eating.", rule: "Use ESTAR for continuous action." },
+    { q: "Ellas ___ listas para salir.", a: "están", trans: "They are ready to go out.", rule: "Use ESTAR for state of being." },
+    { q: "La tienda ___ cerrada.", a: "está", trans: "The store is closed.", rule: "Use ESTAR for state/condition." },
+    { q: "Yo ___ en la oficina.", a: "estoy", trans: "I am at the office.", rule: "Use ESTAR for location." },
+    { q: "Tú ___ muy emocionado.", a: "estás", trans: "You are very excited.", rule: "Use ESTAR for emotion." },
+    { q: "El pastel ___ delicioso.", a: "está", trans: "The cake is delicious (right now).", rule: "Use ESTAR for taste/condition." },
+    { q: "Nosotros ___ nerviosos.", a: "estamos", trans: "We are nervous.", rule: "Use ESTAR for emotional state." },
+    { q: "Ellos ___ en la playa.", a: "están", trans: "They are at the beach.", rule: "Use ESTAR for location." },
+    { q: "La lámpara ___ encendida.", a: "está", trans: "The lamp is on.", rule: "Use ESTAR for state." },
+    { q: "Yo ___ escribiendo.", a: "estoy", trans: "I am writing.", rule: "Use ESTAR for continuous action." },
+    { q: "Tú ___ en Londres ahora.", a: "estás", trans: "You are in London now.", rule: "Use ESTAR for location." },
+    { q: "Yo ___ de vacaciones.", a: "estoy", trans: "I am on vacation.", rule: "Use ESTAR for temporary state." },
+    { q: "Tú ___ en la biblioteca.", a: "estás", trans: "You are in the library.", rule: "Use ESTAR for location." },
+    { q: "Ella ___ un poco nerviosa.", a: "está", trans: "She is a little nervous.", rule: "Use ESTAR for emotion." },
+    { q: "Nosotros ___ muy ocupados.", a: "estamos", trans: "We are very busy.", rule: "Use ESTAR for temporary condition." },
+    { q: "Ellos ___ en la montaña.", a: "están", trans: "They are in the mountains.", rule: "Use ESTAR for location." },
+    { q: "La sopa ___ sosa.", a: "está", trans: "The soup is bland (right now).", rule: "Use ESTAR for flavor condition." },
+    { q: "Yo ___ en el supermercado.", a: "estoy", trans: "I am at the supermarket.", rule: "Use ESTAR for location." },
+    { q: "Tú ___ muy concentrado.", a: "estás", trans: "You are very focused.", rule: "Use ESTAR for temporary state." },
+    { q: "La calle ___ vacía.", a: "está", trans: "The street is empty.", rule: "Use ESTAR for current state." },
+    { q: "Nosotros ___ estudiando español.", a: "estamos", trans: "We are studying Spanish.", rule: "Use ESTAR for continuous action." },
+    { q: "Ellas ___ enfadadas.", a: "están", trans: "They are angry.", rule: "Use ESTAR for emotion." },
+    { q: "El examen ___ corregido.", a: "está", trans: "The exam is graded.", rule: "Use ESTAR for resulting state." },
+    { q: "Yo ___ en el dentista.", a: "estoy", trans: "I am at the dentist.", rule: "Use ESTAR for location." },
+    { q: "Tú ___ muy relajado hoy.", a: "estás", trans: "You are very relaxed today.", rule: "Use ESTAR for temporary state." },
+    { q: "La comida ___ lista.", a: "está", trans: "The food is ready.", rule: "Use ESTAR for condition." },
+    { q: "Nosotros ___ en la cocina.", a: "estamos", trans: "We are in the kitchen.", rule: "Use ESTAR for location." },
+    { q: "Ellos ___ en el extranjero.", a: "están", trans: "They are abroad.", rule: "Use ESTAR for location." },
+    { q: "La puerta ___ rota.", a: "está", trans: "The door is broken.", rule: "Use ESTAR for condition." },
+    { q: "Yo ___ hablando con mamá.", a: "estoy", trans: "I am talking to mom.", rule: "Use ESTAR for continuous action." },
+    { q: "Tú ___ en el trabajo.", a: "estás", trans: "You are at work.", rule: "Use ESTAR for location." },
+    { q: "La fiesta ___ en mi casa.", a: "es", trans: "The party is at my house.", rule: "Use SER for event location." },
+    { q: "El libro ___ sobre la mesa.", a: "está", trans: "The book is on the table.", rule: "Use ESTAR for physical location." },
+    { q: "Nosotros ___ muy ocupados ahora.", a: "estamos", trans: "We are very busy now.", rule: "Use ESTAR for temporary state." },
+    { q: "La puerta ___ abierta.", a: "está", trans: "The door is open.", rule: "Use ESTAR for a state resulting from an action." },
+    { q: "Ese hombre ___ mi profesor.", a: "es", trans: "That man is my teacher.", rule: "Use SER for profession/identity." },
+    { q: "Ustedes ___ muy nerviosos.", a: "están", trans: "You all are very nervous.", rule: "Use ESTAR for emotional state." },
+    { q: "La casa ___ hecha de madera.", a: "es", trans: "The house is made of wood.", rule: "Use SER for material." },
+    { q: "Mis padres ___ en España.", a: "están", trans: "My parents are in Spain.", rule: "Use ESTAR for location." },
+    { q: "La clase ___ aburrida.", a: "es", trans: "The class is boring.", rule: "Use SER for inherent characteristic." },
+    { q: "La clase ___ aburrida.", a: "está", trans: "The class is boring (right now).", rule: "Use ESTAR for temporary state/impression." },
+    { q: "Hoy ___ martes.", a: "es", trans: "Today is Tuesday.", rule: "Use SER for dates/days." },
+    { q: "Las flores ___ marchitas.", a: "están", trans: "The flowers are withered.", rule: "Use ESTAR for condition." },
+    { q: "El regalo ___ para ti.", a: "es", trans: "The gift is for you.", rule: "Use SER for destination/recipient." },
+    { q: "La sopa ___ deliciosa.", a: "está", trans: "The soup is delicious.", rule: "Use ESTAR for temporary quality/taste." },
+    { q: "La película ___ a las ocho.", a: "es", trans: "The movie is at eight.", rule: "Use SER for time of an event." },
+    { q: "El cielo ___ nublado.", a: "está", trans: "The sky is cloudy.", rule: "Use ESTAR for weather conditions." },
+    { q: "Nosotros ___ casados.", a: "estamos", trans: "We are married.", rule: "Use ESTAR for marital status." },
+    { q: "La pluma ___ de plástico.", a: "es", trans: "The pen is made of plastic.", rule: "Use SER for material." },
+    { q: "Ellas ___ listas para salir.", a: "están", trans: "They are ready to leave.", rule: "Use ESTAR for a state of readiness." },
+    { q: "Yo ___ soltero.", a: "soy", trans: "I am single.", rule: "Use SER for civil status (as a defining trait)." },
+    { q: "La luz ___ encendida.", a: "está", trans: "The light is on.", rule: "Use ESTAR for a state of being." },
+    { q: "Usted ___ muy elegante hoy.", a: "está", trans: "You are very elegant today.", rule: "Use ESTAR for temporary appearance." },
+    { q: "El profesor ___ de Argentina.", a: "es", trans: "The teacher is from Argentina.", rule: "Use SER for origin." },
+    { q: "El cuarto ___ muy limpio.", a: "está", trans: "The room is very clean.", rule: "Use ESTAR for a condition resulting from an action." },
+    { q: "Nosotros ___ hermanos.", a: "somos", trans: "We are brothers.", rule: "Use SER for relationship." },
+    { q: "La fruta ___ verde.", a: "está", trans: "The fruit is unripe (green).", rule: "Use ESTAR for temporary physical state." },
+    { q: "La fruta ___ verde.", a: "es", trans: "The fruit is green (its color).", rule: "Use SER for permanent color." },
+    { q: "Él ___ muerto.", a: "está", trans: "He is dead.", rule: "Use ESTAR for the state of death." },
+    { q: "La bandera ___ blanca y roja.", a: "es", trans: "The flag is white and red.", rule: "Use SER for permanent color." },
+    { q: "Mi hermano ___ en casa.", a: "está", trans: "My brother is at home.", rule: "Use ESTAR for location." },
+    { q: "La tienda ___ cerrada hoy.", a: "está", trans: "The store is closed today.", rule: "Use ESTAR for temporary state/status." },
+    { q: "Nosotros ___ amigos desde niños.", a: "somos", trans: "We have been friends since we were children.", rule: "Use SER for identity/relationship." },
+    { q: "La carne ___ bien cocida.", a: "está", trans: "The meat is well-cooked.", rule: "Use ESTAR for condition/state." },
+    { q: "Yo ___ de Madrid.", a: "soy", trans: "I am from Madrid.", rule: "Use SER for origin." },
+    { q: "Ellos ___ hablando con el jefe.", a: "están", trans: "They are talking to the boss.", rule: "Use ESTAR for continuous action." },
+    { q: "Esa chica ___ muy inteligente.", a: "es", trans: "That girl is very intelligent.", rule: "Use SER for inherent traits." },
+    { q: "El baño ___ al fondo del pasillo.", a: "está", trans: "The bathroom is at the end of the hall.", rule: "Use ESTAR for location." },
+    { q: "La conferencia ___ organizada por el club.", a: "es", trans: "The conference is organized by the club.", rule: "Use SER for passive voice." },
+    { q: "El café ___ muy caliente.", a: "está", trans: "The coffee is very hot.", rule: "Use ESTAR for temperature/condition." },
+    { q: "El café ___ una bebida popular.", a: "es", trans: "Coffee is a popular drink.", rule: "Use SER for classification/definition." },
+    { q: "La computadora ___ rota.", a: "está", trans: "The computer is broken.", rule: "Use ESTAR for a temporary condition." },
+    { q: "Nosotros ___ los primeros en llegar.", a: "somos", trans: "We are the first to arrive.", rule: "Use SER for identity/position." }
+];
+
+    let questions = [], current = 0, score = 0, highScore = localStorage.getItem("serEstarHighScore") || 0;
+
+    function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
+
+    function loadQuestion() {
+        document.getElementById("score").innerText = score;
+        document.getElementById("high-score").innerText = highScore;
+        // Update progress bar
+        document.getElementById("progress-bar").value = score;
+        
+        document.getElementById("question").innerText = questions[current].q;
+        document.getElementById("answer").value = "";
+        document.getElementById("answer").disabled = false;
+        document.getElementById("feedback").innerHTML = "";
+        document.getElementById("action-area").innerHTML = '<button onclick="checkAnswer()">Submit</button>';
+    }
+
+// Helper function to remove accents
+function normalize(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+function checkAnswer() {
+    let userInput = document.getElementById("answer").value.trim();
+    let q = questions[current];
+    let submitBtn = document.querySelector("#action-area button");
+    
+    // Normalize both for comparison
+    let isCorrect = normalize(userInput) === normalize(q.a);
+    
+    document.getElementById("answer").disabled = true;
+    submitBtn.disabled = true;
+
+    if (isCorrect) {
+        score += 10;
+        document.getElementById("score").innerText = score;
+        document.getElementById("progress-bar").value = score;
+        
+        if (score >= 500) {
+            document.getElementById("feedback").innerHTML = `<span style="color: green;">Goal Reached! You hit 500!</span>`;
+            return;
+        }
+
+        if (score > highScore) { 
+            highScore = score; 
+            localStorage.setItem("serEstarHighScore", highScore); 
+        }
+        
+        document.getElementById("feedback").innerHTML = `<span style="color: green;">Correct!</span><br><span style="font-weight: normal;">${q.trans}</span>`;
+        
+        setTimeout(() => { 
+            current++; 
+            (current < questions.length) ? loadQuestion() : alert("Finished!"); 
+        }, 3000);
+    } else {
+        document.getElementById("feedback").innerHTML = `<span style="color: red;">Wrong!</span><br>Correct: <strong>${q.a}</strong><br><small>${q.rule}</small>`;
+        document.getElementById("action-area").innerHTML = `<button onclick="resetGame()">Play Again</button>`;
+    }
+}
+
+    function resetGame() { score = 0; current = 0; document.getElementById("progress-bar").value = 0; questions = shuffle([...SerEstar]); loadQuestion(); }
+    resetGame();
+</script>
+</body>
+</html>
