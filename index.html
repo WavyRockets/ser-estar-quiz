@@ -44,6 +44,7 @@
         <h4 id="questionType">Beginner (present tense)</h4>    
         <p>Score: <span id="score">0</span> | High Score: <span id="high-score">0</span></p>
         <h3 id="question">Loading...</h3>
+        <div id="translation"></div>
         <input type="text" id="answer" placeholder="es / soy / está...">
         <div id="action-area"><button onclick="checkAnswer()">Submit</button></div>
         <div id="feedback"></div>
@@ -990,7 +991,6 @@
         // 3. Put the Submit button back
         document.getElementById("action-area").innerHTML = '<button onclick="checkAnswer()">Submit</button>';
     }
-
 
     questions = SerEstar; 
     current = Math.floor(Math.random() * SerEstar.length);
