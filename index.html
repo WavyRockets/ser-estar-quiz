@@ -7,65 +7,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Comic Neue', 'Comic Sans MS', cursive; background-color: #fdf5e6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
-        .card { background: rgba(255, 255, 255, 0.9); padding: 2rem; border-radius: 20px; border: 3px solid #333; text-align: center; width: 100%; max-width: 500px; }
         h3 { font-size: 1.8rem; margin-bottom: 20px; font-weight: normal;}
         h4 { font-size: 1.3rem; margin: 5px 0; }
         input { width: 85%; padding: 15px; margin: 15px 0; border: 3px dashed #666; font-size: 1.5rem; font-size: 16px; outline: none; }
-button { 
-    padding: 15px 30px; 
-    border-radius: 20px; 
-    border: 3px solid #333; 
-    background: #ffe4b5; 
-    cursor: pointer; 
-    font-size: 1.5rem; 
-    font-weight: bold; 
-    color: #333;           /* Explicitly set text color to dark */
-    appearance: none;      /* Removes default mobile OS button styles */
-    -webkit-appearance: none; 
-}
+        button { padding: 15px 30px; border-radius: 20px; border: 3px solid #333; background: #ffe4b5; cursor: pointer; font-size: 1.5rem; font-weight: bold; color: #333;appearance: none; -webkit-appearance: none; }
         button:hover { background: #ffd700; }
-        #feedback { margin-top: 20px; font-size: 1.1rem; font-weight: bold; min-height: auto; padding: 10px; }    
-        /* Progress Bar Styling */
-/* Progress Bar Styling */
-#progress-container { margin: 15px 0; }
-
-progress {
-    width: 100%;
-    height: 25px;
-    appearance: none;
-    background-color: #e0e0e0; /* The light grey track */
-    border-radius: 15px;
-    border: none;
-    overflow: hidden; /* This keeps the green bar inside the rounded corners */
-}
-
-button:disabled {
-    background: #cccccc;
-    color: #888888;
-    cursor: not-allowed;
-    border-color: #999;
-}
-
-/* The filled portion */
-progress::-webkit-progress-value {
-    background-color: #77dd77; /* Nicer pastel green */
-    border-radius: 15px;
-}
-
-/* Ensure the background doesn't show a border */
-progress::-webkit-progress-bar {
-    background-color: transparent;
-}
+        button:disabled { background: #cccccc; color: #888888; cursor: not-allowed; border-color: #999; }
+        #feedback { margin-top: 20px; font-size: 1.1rem; font-weight: bold; min-height: auto; padding: 10px; }   
+        #high-score {font-weight: bold;}
+        .card { background: rgba(255, 255, 255, 0.9); padding: 2rem; border-radius: 20px; border: 3px solid #333; text-align: center; width: 100%; max-width: 500px; }
     </style>
 </head>
 <body>
 
 <div id="game-screen" class="card">
-    <h4 id="questionType">Ser vs Estar</h4>    
-    <p>Score: <span id="score">0</span> / 500 | High Score: <span id="high-score">0</span></p>
-    <div id="progress-container">
-        <progress id="progress-bar" value="0" max="500"></progress>
-    </div>
+    <h4 id="questionType">Beginner (present tense)</h4>    
+    <p>Score: <span id="score">0</span> | High Score: <span id="high-score">0</span></p>
     <h3 id="question">Loading...</h3>
     <p id="translation" style="font-style: italic; color: #555;"></p>
     <input type="text" id="answer" placeholder="es / soy / está...">
@@ -204,7 +161,107 @@ const SerEstar = [
     { q: "El café ___ muy caliente.", a: "está", trans: "The coffee is very hot.", rule: "Use ESTAR for temperature/condition." },
     { q: "El café ___ una bebida popular.", a: "es", trans: "Coffee is a popular drink.", rule: "Use SER for classification/definition." },
     { q: "La computadora ___ rota.", a: "está", trans: "The computer is broken.", rule: "Use ESTAR for a temporary condition." },
-    { q: "Nosotros ___ los primeros en llegar.", a: "somos", trans: "We are the first to arrive.", rule: "Use SER for identity/position." }
+    { q: "Nosotros ___ los primeros en llegar.", a: "somos", trans: "We are the first to arrive.", rule: "Use SER for identity/position." },
+    { q: "Yo ___ mucha hambre.", a: "tengo", trans: "I am very hungry.", rule: "Use TENER for physical states." },
+    { q: "Tú ___ diez años.", a: "tienes", trans: "You are ten years old.", rule: "Use TENER for age." },
+    { q: "Él ___ que estudiar para la prueba.", a: "tiene", trans: "He has to study for the test.", rule: "Use TENER QUE for obligation." },
+    { q: "Nosotros ___ mucho frío hoy.", a: "tenemos", trans: "We are very cold today.", rule: "Use TENER for physical sensations." },
+    { q: "Ellos ___ mucha suerte en el sorteo.", a: "tienen", trans: "They are very lucky in the draw.", rule: "Use TENER for states." },
+    { q: "Yo ___ ganas de comer un completo.", a: "tengo", trans: "I feel like eating a hot dog.", rule: "Use TENER GANAS DE for desire." },
+    { q: "Tú ___ razón sobre el precio.", a: "tienes", trans: "You are right about the price.", rule: "Use TENER RAZÓN for being correct." },
+    { q: "Ella ___ mucha prisa por llegar al Metro.", a: "tiene", trans: "She is in a big hurry to get to the Metro.", rule: "Use TENER PRISA for urgency." },
+    { q: "Nosotros ___ miedo de las arañas.", a: "tenemos", trans: "We are afraid of spiders.", rule: "Use TENER for emotional states." },
+    { q: "Ustedes ___ que trabajar mañana.", a: "tienen", trans: "You all have to work tomorrow.", rule: "Use TENER QUE for obligation." },
+    { q: "Yo ___ cuidado al cruzar la calle.", a: "tengo", trans: "I am careful when crossing the street.", rule: "Use TENER CUIDADO for caution." },
+    { q: "Tú ___ mucha sed después de correr.", a: "tienes", trans: "You are very thirsty after running.", rule: "Use TENER for physical states." },
+    { q: "Él ___ mucha vergüenza de lo que pasó.", a: "tiene", trans: "He is very ashamed of what happened.", rule: "Use TENER for emotions." },
+    { q: "Nosotros ___ ganas de ir al sur.", a: "tenemos", trans: "We feel like going to the south.", rule: "Use TENER GANAS DE for desire." },
+    { q: "Ellas ___ dieciocho años.", a: "tienen", trans: "They are eighteen years old.", rule: "Use TENER for age." },
+    { q: "Yo ___ un hermano que vive en Santiago.", a: "tengo", trans: "I have a brother who lives in Santiago.", rule: "Use TENER for possession/relationships." },
+    { q: "Tú ___ la culpa de este error.", a: "tienes", trans: "You are to blame for this error.", rule: "Use TENER LA CULPA for guilt." },
+    { q: "Ella ___ éxito con su nuevo negocio.", a: "tiene", trans: "She is successful with her new business.", rule: "Use TENER ÉXITO for success." },
+    { q: "Nosotros ___ mucho sueño después de almorzar.", a: "tenemos", trans: "We are very sleepy after eating lunch.", rule: "Use TENER for physical states." },
+    { q: "Ellos ___ que comprar pan para el desayuno.", a: "tienen", trans: "They have to buy bread for breakfast.", rule: "Use TENER QUE for obligation." },
+    { q: "Yo ___ dolor de cabeza.", a: "tengo", trans: "I have a headache.", rule: "Use TENER for physical ailments." },
+    { q: "Tú ___ paciencia con los niños.", a: "tienes", trans: "You have patience with the children.", rule: "Use TENER for qualities." },
+    { q: "Él ___ claro lo que debe hacer.", a: "tiene", trans: "He is clear about what he must do.", rule: "Use TENER CLARO for understanding." },
+    { q: "Nosotros ___ tiempo para tomar un café.", a: "tenemos", trans: "We have time to have a coffee.", rule: "Use TENER for possession of time." },
+    { q: "Ustedes ___ celos de su amigo.", a: "tienen", trans: "You all are jealous of your friend.", rule: "Use TENER for emotional states." },
+    { q: "Yo ___ una casa muy linda.", a: "tengo", trans: "I have a very nice house.", rule: "Use TENER for possession." },
+    { q: "Tú ___ que avisar antes de llegar.", a: "tienes", trans: "You have to notify before arriving.", rule: "Use TENER QUE for obligation." },
+    { q: "Ella ___ la costumbre de tomar té.", a: "tiene", trans: "She has the habit of drinking tea.", rule: "Use TENER for habits." },
+    { q: "Nosotros ___ calor en este verano.", a: "tenemos", trans: "We are hot this summer.", rule: "Use TENER for physical sensations." },
+    { q: "Ellos ___ mucha experiencia en este trabajo.", a: "tienen", trans: "They have a lot of experience in this job.", rule: "Use TENER for possession/attributes." },
+    { q: "Yo ___ ganas de comprar una palta.", a: "tengo", trans: "I feel like buying an avocado.", rule: "Use TENER GANAS DE for desire." },
+    { q: "Tú ___ que leer ese libro.", a: "tienes", trans: "You have to read that book.", rule: "Use TENER QUE for obligation." },
+    { q: "Él ___ la intención de ir a la fiesta.", a: "tiene", trans: "He has the intention of going to the party.", rule: "Use TENER for intent." },
+    { q: "Nosotros ___ un compromiso a las seis.", a: "tenemos", trans: "We have a commitment at six.", rule: "Use TENER for schedules." },
+    { q: "Ustedes ___ suerte de vivir en Chile.", a: "tienen", trans: "You all are lucky to live in Chile.", rule: "Use TENER for states." },
+    { q: "Yo ___ mucha confianza en mi equipo.", a: "tengo", trans: "I have a lot of confidence in my team.", rule: "Use TENER for mental states." },
+    { q: "Tú ___ frío en los pies.", a: "tienes", trans: "You are cold in your feet.", rule: "Use TENER for physical sensations." },
+    { q: "Ella ___ que terminar la tarea.", a: "tiene", trans: "She has to finish the homework.", rule: "Use TENER QUE for obligation." },
+    { q: "Nosotros ___ miedo de perder el bus.", a: "tenemos", trans: "We are afraid of missing the bus.", rule: "Use TENER for emotional states." },
+    { q: "Ellos ___ mucha sed en este momento.", a: "tienen", trans: "They are very thirsty at this moment.", rule: "Use TENER for physical states." },
+    { q: "Yo ___ treinta y cinco años.", a: "tengo", trans: "I am thirty-five years old.", rule: "Use TENER for age." },
+    { q: "Tú ___ prisa por ir al trabajo.", a: "tienes", trans: "You are in a hurry to go to work.", rule: "Use TENER PRISA for urgency." },
+    { q: "Él ___ ganas de aprender a bailar cueca.", a: "tiene", trans: "He feels like learning to dance the cueca.", rule: "Use TENER GANAS DE for desire." },
+    { q: "Nosotros ___ la razón en este caso.", a: "tenemos", trans: "We are right in this case.", rule: "Use TENER RAZÓN for being correct." },
+    { q: "Ustedes ___ muchas cosas que hacer hoy.", a: "tienen", trans: "You all have many things to do today.", rule: "Use TENER for possession of tasks." },
+    { q: "Yo ___ cuidado con los perros callejeros.", a: "tengo", trans: "I am careful with the stray dogs.", rule: "Use TENER CUIDADO for caution." },
+    { q: "Tú ___ que pedir permiso.", a: "tienes", trans: "You have to ask for permission.", rule: "Use TENER QUE for obligation." },
+    { q: "Ella ___ una sonrisa enorme.", a: "tiene", trans: "She has a huge smile.", rule: "Use TENER for physical features." },
+    { q: "Nosotros ___ mucho respeto por nuestros abuelos.", a: "tenemos", trans: "We have much respect for our grandparents.", rule: "Use TENER for feelings/attitudes." },
+    { q: "Ellos ___ hambre de tanto esperar.", a: "tienen", trans: "They are hungry from waiting so long.", rule: "Use TENER for physical states." },
+    { q: "Yo ___ en mente un proyecto nuevo.", a: "tengo", trans: "I have a new project in mind.", rule: "Use TENER EN MENTE for plans." },
+    { q: "Tú ___ calor porque está todo cerrado.", a: "tienes", trans: "You are hot because everything is closed.", rule: "Use TENER for physical sensations." },
+    { q: "Él ___ que comprar un pasaje.", a: "tiene", trans: "He has to buy a ticket.", rule: "Use TENER QUE for obligation." },
+    { q: "Nosotros ___ la obligación de ser puntuales.", a: "tenemos", trans: "We have the obligation to be punctual.", rule: "Use TENER for duties." },
+    { q: "Ustedes ___ mucha vergüenza por llegar tarde.", a: "tienen", trans: "You all are very ashamed for arriving late.", rule: "Use TENER for emotions." },
+    { q: "Yo ___ una idea genial.", a: "tengo", trans: "I have a great idea.", rule: "Use TENER for possession of thoughts." },
+    { q: "Tú ___ ganas de ir a la playa en verano.", a: "tienes", trans: "You feel like going to the beach in the summer.", rule: "Use TENER GANAS DE for desire." },
+    { q: "Ella ___ la responsabilidad de la casa.", a: "tiene", trans: "She has the responsibility of the house.", rule: "Use TENER for duties." },
+    { q: "Nosotros ___ miedo de la oscuridad.", a: "tenemos", trans: "We are afraid of the dark.", rule: "Use TENER for emotional states." },
+    { q: "Ellos ___ que llegar temprano mañana.", a: "tienen", trans: "They have to arrive early tomorrow.", rule: "Use TENER QUE for obligation." },
+    { q: "Yo ___ sueño aunque dormí bien.", a: "tengo", trans: "I am sleepy even though I slept well.", rule: "Use TENER for physical states." },
+    { q: "Tú ___ la oportunidad de viajar.", a: "tienes", trans: "You have the opportunity to travel.", rule: "Use TENER for possession of chances." },
+    { q: "Él ___ mucha sed, quiere agua.", a: "tiene", trans: "He is very thirsty, he wants water.", rule: "Use TENER for physical states." },
+    { q: "Nosotros ___ que estudiar historia.", a: "tenemos", trans: "We have to study history.", rule: "Use TENER QUE for obligation." },
+    { q: "Ustedes ___ el derecho a opinar.", a: "tienen", trans: "You all have the right to an opinion.", rule: "Use TENER for rights." },
+    { q: "Yo ___ mucha suerte en mi trabajo.", a: "tengo", trans: "I am very lucky in my work.", rule: "Use TENER for states." },
+    { q: "Tú ___ ganas de tomar mate.", a: "tienes", trans: "You feel like drinking mate.", rule: "Use TENER GANAS DE for desire." },
+    { q: "Ella ___ cuidado con las escaleras.", a: "tiene", trans: "She is careful with the stairs.", rule: "Use TENER CUIDADO for caution." },
+    { q: "Nosotros ___ dolor de muela.", a: "tenemos", trans: "We have a toothache.", rule: "Use TENER for physical ailments." },
+    { q: "Ellos ___ que salir ahora mismo.", a: "tienen", trans: "They have to leave right now.", rule: "Use TENER QUE for obligation." },
+    { q: "Yo ___ veintidós años.", a: "tengo", trans: "I am twenty-two years old.", rule: "Use TENER for age." },
+    { q: "Tú ___ la razón cuando dices eso.", a: "tienes", trans: "You are right when you say that.", rule: "Use TENER RAZÓN for being correct." },
+    { q: "Él ___ mucha paciencia con el tráfico.", a: "tiene", trans: "He has a lot of patience with traffic.", rule: "Use TENER for qualities." },
+    { q: "Nosotros ___ un perro muy travieso.", a: "tenemos", trans: "We have a very mischievous dog.", rule: "Use TENER for possession." },
+    { q: "Ustedes ___ que practicar español.", a: "tienen", trans: "You all have to practice Spanish.", rule: "Use TENER QUE for obligation." },
+    { q: "Yo ___ mucha sed, por favor dame agua.", a: "tengo", trans: "I am very thirsty, please give me water.", rule: "Use TENER for physical states." },
+    { q: "Tú ___ prisa, el bus ya viene.", a: "tienes", trans: "You are in a hurry, the bus is coming.", rule: "Use TENER PRISA for urgency." },
+    { q: "Ella ___ miedo a los relámpagos.", a: "tiene", trans: "She is afraid of lightning.", rule: "Use TENER for emotional states." },
+    { q: "Nosotros ___ el control de la situación.", a: "tenemos", trans: "We have control of the situation.", rule: "Use TENER for power/control." },
+    { q: "Ellos ___ que esperar en la fila.", a: "tienen", trans: "They have to wait in line.", rule: "Use TENER QUE for obligation." },
+    { q: "Yo ___ ganas de ver a mi familia.", a: "tengo", trans: "I feel like seeing my family.", rule: "Use TENER GANAS DE for desire." },
+    { q: "Tú ___ un problema con tu celular.", a: "tienes", trans: "You have a problem with your phone.", rule: "Use TENER for possession of issues." },
+    { q: "Él ___ mucha suerte en el examen.", a: "tiene", trans: "He is very lucky in the test.", rule: "Use TENER for states." },
+    { q: "Nosotros ___ que limpiar la cocina.", a: "tenemos", trans: "We have to clean the kitchen.", rule: "Use TENER QUE for obligation." },
+    { q: "Ustedes ___ mucho calor hoy.", a: "tienen", trans: "You all are very hot today.", rule: "Use TENER for physical sensations." },
+    { q: "Yo ___ la intención de ser mejor.", a: "tengo", trans: "I have the intention of being better.", rule: "Use TENER for intent." },
+    { q: "Tú ___ mucho sueño, vete a dormir.", a: "tienes", trans: "You are very sleepy, go to sleep.", rule: "Use TENER for physical states." },
+    { q: "Ella ___ mucha confianza en su jefe.", a: "tiene", trans: "She has a lot of confidence in her boss.", rule: "Use TENER for mental states." },
+    { q: "Nosotros ___ que pagar la cuenta.", a: "tenemos", trans: "We have to pay the bill.", rule: "Use TENER QUE for obligation." },
+    { q: "Ellos ___ vergüenza de bailar.", a: "tienen", trans: "They are ashamed to dance.", rule: "Use TENER for emotional states." },
+    { q: "Yo ___ cuidado con lo que digo.", a: "tengo", trans: "I am careful with what I say.", rule: "Use TENER CUIDADO for caution." },
+    { q: "Tú ___ ganas de comprar ropa nueva.", a: "tienes", trans: "You feel like buying new clothes.", rule: "Use TENER GANAS DE for desire." },
+    { q: "Él ___ que ir al médico.", a: "tiene", trans: "He has to go to the doctor.", rule: "Use TENER QUE for obligation." },
+    { q: "Nosotros ___ mucha plata ahorrada.", a: "tenemos", trans: "We have a lot of money saved.", rule: "Use TENER for possession." },
+    { q: "Ustedes ___ razón, esto no funciona.", a: "tienen", trans: "You all are right, this does not work.", rule: "Use TENER RAZÓN for being correct." },
+    { q: "Yo ___ hambre a cada rato.", a: "tengo", trans: "I am hungry all the time.", rule: "Use TENER for physical states." },
+    { q: "Tú ___ miedo de que llueva.", a: "tienes", trans: "You are afraid that it will rain.", rule: "Use TENER for emotional states." },
+    { q: "Ella ___ que hablar con el profesor.", a: "tiene", trans: "She has to talk to the teacher.", rule: "Use TENER QUE for obligation." },
+    { q: "Nosotros ___ muchas ganas de viajar.", a: "tenemos", trans: "We really feel like traveling.", rule: "Use TENER GANAS DE for desire." },
+    { q: "Ellos ___ veinte años de edad.", a: "tienen", trans: "They are twenty years old.", rule: "Use TENER for age." },
 ];
 
     let questions = [], current = 0, score = 0, highScore = localStorage.getItem("serEstarHighScore") || 0;
@@ -214,66 +271,75 @@ const SerEstar = [
 function loadQuestion() {
     document.getElementById("score").innerText = score;
     document.getElementById("high-score").innerText = highScore;
-    document.getElementById("progress-bar").value = score;
     
-    // Set the question
+    // Set the question and translation
     document.getElementById("question").innerText = questions[current].q;
-    
-    // Set the translation
     document.getElementById("translation").innerText = `(${questions[current].trans})`;
     
+    // Reset UI
     document.getElementById("answer").value = "";
     document.getElementById("answer").disabled = false;
     document.getElementById("feedback").innerHTML = "";
+    
+    // Always show the Submit button
     document.getElementById("action-area").innerHTML = '<button onclick="checkAnswer()">Submit</button>';
 }
 
 // Helper function to remove accents
 function normalize(str) {
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
 function checkAnswer() {
-    let userInput = document.getElementById("answer").value.trim();
-    let q = questions[current];
-    let submitBtn = document.querySelector("#action-area button");
-    
-    // Clear the translation upon submission
-    document.getElementById("translation").innerText = ""; 
-    
-    let isCorrect = normalize(userInput) === normalize(q.a);
-    
-    document.getElementById("answer").disabled = true;
-    submitBtn.disabled = true;
+    let userInput = normalize(document.getElementById("answer").value.trim());
+    let correctAnswer = normalize(questions[current].a);
+    let feedback = document.getElementById("feedback");
 
-    if (isCorrect) {
+    if (userInput === correctAnswer) {
         score += 10;
-        document.getElementById("score").innerText = score;
-        document.getElementById("progress-bar").value = score;
-        
-        if (score >= 500) {
-            document.getElementById("feedback").innerHTML = `<span style="color: green;">Goal Reached! You hit 500!</span>`;
-            return;
-        }
-
-        if (score > highScore) { 
-            highScore = score; 
-            localStorage.setItem("serEstarHighScore", highScore); 
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem("serEstarHighScore", highScore);
         }
         
-        document.getElementById("feedback").innerHTML = `<span style="color: green;">Correct!</span><br><span style="font-weight: normal;">${q.trans}</span>`;
+        feedback.style.color = "green";
+        feedback.innerText = "Correct! Loading next...";
         
-        setTimeout(() => { 
-            current++; 
-            (current < questions.length) ? loadQuestion() : alert("Finished!"); 
-        }, 3000);
+        setTimeout(() => {
+            current = Math.floor(Math.random() * SerEstar.length);
+            loadQuestion();
+        }, 1000);
     } else {
-        document.getElementById("feedback").innerHTML = `<span style="color: red;">Wrong!</span><br>Correct: <strong>${q.a}</strong><br><small>${q.rule}</small>`;
-        document.getElementById("action-area").innerHTML = `<button onclick="resetGame()">Play Again</button>`;
+        feedback.style.color = "red";
+        // This line adds the specific details back:
+        feedback.innerHTML = `Incorrect. The answer was: <strong>${questions[current].a}</strong>.<br>${questions[current].rule}`;
+        
+        // Keep the "Try Again" button
+        document.getElementById("action-area").innerHTML = 
+            '<button onclick="retry()">Try Again</button>';
     }
 }
 
-    function resetGame() { score = 0; current = 0; document.getElementById("progress-bar").value = 0; questions = shuffle([...SerEstar]); loadQuestion(); }
+function retry() {
+    // 1. Clear the feedback area
+    document.getElementById("feedback").innerHTML = "";
+    
+    // 2. Clear the input and focus on it
+    let inputField = document.getElementById("answer");
+    inputField.value = "";
+    inputField.disabled = false;
+    inputField.focus();
+    
+    // 3. Put the Submit button back
+    document.getElementById("action-area").innerHTML = '<button onclick="checkAnswer()">Submit</button>';
+}
+
+
+questions = SerEstar; 
+current = Math.floor(Math.random() * SerEstar.length);
+loadQuestion();
+
+    function resetGame() { score = 0; current = 0; questions = shuffle([...SerEstar]); loadQuestion(); }
     resetGame();
 </script>
 </body>
