@@ -67,6 +67,7 @@ progress::-webkit-progress-bar {
         <progress id="progress-bar" value="0" max="500"></progress>
     </div>
     <h3 id="question">Loading...</h3>
+    <p id="translation" style="font-style: italic; color: #555;"></p>
     <input type="text" id="answer" placeholder="es / soy / está...">
     <div id="action-area"><button onclick="checkAnswer()">Submit</button></div>
     <div id="feedback"></div>
@@ -210,18 +211,22 @@ const SerEstar = [
 
     function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
 
-    function loadQuestion() {
-        document.getElementById("score").innerText = score;
-        document.getElementById("high-score").innerText = highScore;
-        // Update progress bar
-        document.getElementById("progress-bar").value = score;
-        
-        document.getElementById("question").innerText = questions[current].q;
-        document.getElementById("answer").value = "";
-        document.getElementById("answer").disabled = false;
-        document.getElementById("feedback").innerHTML = "";
-        document.getElementById("action-area").innerHTML = '<button onclick="checkAnswer()">Submit</button>';
-    }
+function loadQuestion() {
+    document.getElementById("score").innerText = score;
+    document.getElementById("high-score").innerText = highScore;
+    document.getElementById("progress-bar").value = score;
+    
+    // Set the question
+    document.getElementById("question").innerText = questions[current].q;
+    
+    // Set the translation
+    document.getElementById("translation").innerText = `(${questions[current].trans})`;
+    
+    document.getElementById("answer").value = "";
+    document.getElementById("answer").disabled = false;
+    document.getElementById("feedback").innerHTML = "";
+    document.getElementById("action-area").innerHTML = '<button onclick="checkAnswer()">Submit</button>';
+}
 
 // Helper function to remove accents
 function normalize(str) {
@@ -233,7 +238,9 @@ function checkAnswer() {
     let q = questions[current];
     let submitBtn = document.querySelector("#action-area button");
     
-    // Normalize both for comparison
+    // Clear the translation upon submission
+    document.getElementById("translation").innerText = ""; 
+    
     let isCorrect = normalize(userInput) === normalize(q.a);
     
     document.getElementById("answer").disabled = true;
