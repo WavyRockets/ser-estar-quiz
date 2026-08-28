@@ -26,7 +26,7 @@
     .close:hover { color: #000; }
     .container { position: relative; width: 100%; max-width: 500px; box-sizing: border-box; }
     #info-btn { position: absolute; top: -50px; right: 0;  background: #333; color: white; border-radius: 50%; width: 40px; height: 40px; border: none; cursor: pointer;font-size: 1.2rem; z-index: 10; }
-    footer { text-align: center; margin-top: 20px; font-size: 1.1rem; }
+    footer { text-align: center; margin-top: 10px; font-size: 1.1rem; }
     footer #feedback-link { width: auto; color: #333; text-decoration: underline; cursor: pointer; background: none; border: none; border-radius: 0; font-family: inherit; font-weight: normal; font-size: 1.1rem; padding: 0; }
     footer #feedback-link:hover { color: #000; background: none; }
     .field { text-align: left; margin-bottom: 5px; }
@@ -58,10 +58,10 @@
         <input type="text" id="answer" placeholder="es / soy / está...">
         <div id="action-area"><button onclick="checkAnswer()">Submit</button></div>
         <div id="feedback"></div>
+        <footer>
+            <button type="button" id="feedback-link" onclick="openFeedbackModal()">Feedback</button>
+        </footer>
     </div>
-    <footer>
-        <button type="button" id="feedback-link" onclick="openFeedbackModal()">Give feedback</button>
-    </footer>
 </div>
 
 <div id="verbModal" class="modal">
@@ -76,7 +76,7 @@
 <div id="feedbackModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeFeedbackModal()">&times;</span>
-        <h3>Send Feedback</h3>
+        <h3>Feedback</h3>
         <form id="feedback-form" novalidate>
             <div class="field">
                 <label for="feedback-name">Name</label>
