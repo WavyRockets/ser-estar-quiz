@@ -138,9 +138,17 @@
 
     const FEEDBACK_RECIPIENT = "scottmclintock72@gmail.com";
 
+    const FEEDBACK_FIELDS = ["name", "email", "description"];
+
     function openFeedbackModal() {
+        clearFeedbackMessages();
         document.getElementById('feedbackModal').style.display = 'flex';
         document.getElementById('feedback-name').focus();
+    }
+
+    function clearFeedbackMessages() {
+        FEEDBACK_FIELDS.forEach(field => setFieldError(field, ""));
+        document.getElementById("feedback-status").innerText = "";
     }
 
     function closeFeedbackModal() {
@@ -151,48 +159,56 @@
         document.getElementById(`feedback-${field}-error`).innerText = message;
     }
 
-    function validateFeedback(name, email, description) {
-        let valid = true;
+    const feedbackValidators = {
+        name: value => {
+            if (!value) return "Please enter your name.";
+            if (!/^[A-Za-z]+$/.test(value)) return "Name can only contain letters A-Z.";
+            return "";
+        },
+        email: value => {
+            if (!value) return "Please enter your email address.";
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Please enter a valid email address.";
+            return "";
+        },
+        description: value => value ? "" : "Please enter a description."
+    };
 
-        if (!name) {
-            setFieldError("name", "Please enter your name.");
-            valid = false;
-        } else if (!/^[A-Za-z]+$/.test(name)) {
-            setFieldError("name", "Name can only contain letters A-Z.");
-            valid = false;
-        } else {
-            setFieldError("name", "");
-        }
-
-        if (!email) {
-            setFieldError("email", "Please enter your email address.");
-            valid = false;
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            setFieldError("email", "Please enter a valid email address.");
-            valid = false;
-        } else {
-            setFieldError("email", "");
-        }
-
-        if (!description) {
-            setFieldError("description", "Please enter a description.");
-            valid = false;
-        } else {
-            setFieldError("description", "");
-        }
-
-        return valid;
+    function fieldValue(field) {
+        return document.getElementById(`feedback-${field}`).value.trim();
     }
+
+    function validateField(field) {
+        let message = feedbackValidators[field](fieldValue(field));
+        setFieldError(field, message);
+        return !message;
+    }
+
+    function validateFeedback() {
+        return FEEDBACK_FIELDS.map(validateField).every(Boolean);
+    }
+
+    FEEDBACK_FIELDS.forEach(field => {
+        document.getElementById(`feedback-${field}`).addEventListener("input", function() {
+            // Only re-check fields already flagged, so typing a fresh field isn't nagged.
+            if (!document.getElementById(`feedback-${field}-error`).innerText) return;
+            validateField(field);
+
+            let status = document.getElementById("feedback-status");
+            if (status.innerText && FEEDBACK_FIELDS.every(f => !document.getElementById(`feedback-${f}-error`).innerText)) {
+                status.innerText = "";
+            }
+        });
+    });
 
     document.getElementById("feedback-form").addEventListener("submit", function(event) {
         event.preventDefault();
 
-        let name = document.getElementById("feedback-name").value.trim();
-        let email = document.getElementById("feedback-email").value.trim();
-        let description = document.getElementById("feedback-description").value.trim();
+        let name = fieldValue("name");
+        let email = fieldValue("email");
+        let description = fieldValue("description");
         let status = document.getElementById("feedback-status");
 
-        if (!validateFeedback(name, email, description)) {
+        if (!validateFeedback()) {
             status.style.color = "#c00";
             status.innerText = "Please fix the errors above.";
             return;
@@ -202,9 +218,10 @@
         let body = `Name: ${name}\nEmail: ${email}\n\n${description}`;
         window.location.href = `mailto:${FEEDBACK_RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
+        this.reset();
+        clearFeedbackMessages();
         status.style.color = "green";
         status.innerText = "Opening your email app to send the feedback...";
-        this.reset();
     });
 
     const SerEstar = [
