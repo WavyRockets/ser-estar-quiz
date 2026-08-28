@@ -190,8 +190,9 @@
     FEEDBACK_FIELDS.forEach(field => {
         document.getElementById(`feedback-${field}`).addEventListener("input", function() {
             // Only re-check fields already flagged, so typing a fresh field isn't nagged.
-            if (!document.getElementById(`feedback-${field}-error`).innerText) return;
-            validateField(field);
+            if (document.getElementById(`feedback-${field}-error`).innerText) {
+                validateField(field);
+            }
 
             let status = document.getElementById("feedback-status");
             if (status.innerText && FEEDBACK_FIELDS.every(f => !document.getElementById(`feedback-${f}-error`).innerText)) {
