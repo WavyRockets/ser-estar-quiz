@@ -26,6 +26,15 @@
     .close:hover { color: #000; }
     .container { position: relative; width: 100%; max-width: 500px; box-sizing: border-box; }
     #info-btn { position: absolute; top: -50px; right: 0;  background: #333; color: white; border-radius: 50%; width: 40px; height: 40px; border: none; cursor: pointer;font-size: 1.2rem; z-index: 10; }
+    footer { text-align: center; margin-top: 10px; font-size: 1.1rem; }
+    footer #feedback-link { width: auto; color: #333; text-decoration: underline; cursor: pointer; background: none; border: none; border-radius: 0; font-family: inherit; font-weight: normal; font-size: 1.1rem; padding: 0; }
+    footer #feedback-link:hover { color: #000; background: none; }
+    .field { text-align: left; margin-bottom: 5px; }
+    .field label { font-weight: bold; }
+    .field input, .field textarea { width: 100%; padding: 10px; margin: 5px 0; border: 3px dashed #666; font-size: 1.1rem; font-family: inherit; box-sizing: border-box; }
+    .field textarea { min-height: 100px; resize: vertical; }
+    .field-error { color: #c00; font-size: 0.95rem; font-weight: bold; min-height: 1.2em; }
+    #feedback-status { margin-top: 10px; font-weight: bold; }
 
 @media (max-width: 600px) {
     /* Hides the first header cell */
@@ -49,6 +58,9 @@
         <input type="text" id="answer" placeholder="es / soy / está...">
         <div id="action-area"><button onclick="checkAnswer()">Submit</button></div>
         <div id="feedback"></div>
+        <footer>
+            <button type="button" id="feedback-link" onclick="openFeedbackModal()">Feedback</button>
+        </footer>
     </div>
 </div>
 
@@ -58,6 +70,32 @@
         <span class="close" onclick="closeModal()">&times;</span>
         <h3>Verb Cheat Sheet</h3>
         <div id="table-container"></div>
+    </div>
+</div>
+
+<div id="feedbackModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeFeedbackModal()">&times;</span>
+        <h3>Feedback</h3>
+        <form id="feedback-form" novalidate>
+            <div class="field">
+                <label for="feedback-name">Name</label>
+                <input type="text" id="feedback-name" autocomplete="name">
+                <div class="field-error" id="feedback-name-error"></div>
+            </div>
+            <div class="field">
+                <label for="feedback-email">Email</label>
+                <input type="email" id="feedback-email" autocomplete="email">
+                <div class="field-error" id="feedback-email-error"></div>
+            </div>
+            <div class="field">
+                <label for="feedback-description">Description</label>
+                <textarea id="feedback-description"></textarea>
+                <div class="field-error" id="feedback-description-error"></div>
+            </div>
+            <button type="submit">Send</button>
+        </form>
+        <div id="feedback-status"></div>
     </div>
 </div>
 
@@ -97,6 +135,77 @@
     function closeModal() {
         document.getElementById('verbModal').style.display = 'none';
     }
+
+    const FEEDBACK_RECIPIENT = "scottmclintock72@gmail.com";
+
+    function openFeedbackModal() {
+        document.getElementById('feedbackModal').style.display = 'flex';
+        document.getElementById('feedback-name').focus();
+    }
+
+    function closeFeedbackModal() {
+        document.getElementById('feedbackModal').style.display = 'none';
+    }
+
+    function setFieldError(field, message) {
+        document.getElementById(`feedback-${field}-error`).innerText = message;
+    }
+
+    function validateFeedback(name, email, description) {
+        let valid = true;
+
+        if (!name) {
+            setFieldError("name", "Please enter your name.");
+            valid = false;
+        } else if (!/^[A-Za-z]+$/.test(name)) {
+            setFieldError("name", "Name can only contain letters A-Z.");
+            valid = false;
+        } else {
+            setFieldError("name", "");
+        }
+
+        if (!email) {
+            setFieldError("email", "Please enter your email address.");
+            valid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setFieldError("email", "Please enter a valid email address.");
+            valid = false;
+        } else {
+            setFieldError("email", "");
+        }
+
+        if (!description) {
+            setFieldError("description", "Please enter a description.");
+            valid = false;
+        } else {
+            setFieldError("description", "");
+        }
+
+        return valid;
+    }
+
+    document.getElementById("feedback-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        let name = document.getElementById("feedback-name").value.trim();
+        let email = document.getElementById("feedback-email").value.trim();
+        let description = document.getElementById("feedback-description").value.trim();
+        let status = document.getElementById("feedback-status");
+
+        if (!validateFeedback(name, email, description)) {
+            status.style.color = "#c00";
+            status.innerText = "Please fix the errors above.";
+            return;
+        }
+
+        let subject = `Ser vs Estar Quiz feedback from ${name}`;
+        let body = `Name: ${name}\nEmail: ${email}\n\n${description}`;
+        window.location.href = `mailto:${FEEDBACK_RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        status.style.color = "green";
+        status.innerText = "Opening your email app to send the feedback...";
+        this.reset();
+    });
 
     const SerEstar = [
         { q: "Yo ___ abogado.", a: "soy", trans: "I am a lawyer.", rule: "Use SER for profession." },
