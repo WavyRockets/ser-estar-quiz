@@ -950,9 +950,17 @@
     }
 
     function checkAnswer() {
-        let userInput = normalize(document.getElementById("answer").value.trim());
+        let rawInput = document.getElementById("answer").value.trim();
+        let userInput = normalize(rawInput);
         let correctAnswer = normalize(questions[current].a);
         let feedback = document.getElementById("feedback");
+
+        if (/\d/.test(rawInput)) {
+            feedback.style.color = "red";
+            feedback.innerText = "Numbers are not allowed. Please type your answer using letters only.";
+            document.getElementById("answer").focus();
+            return;
+        }
 
         if (userInput === correctAnswer) {
             score += 10;
